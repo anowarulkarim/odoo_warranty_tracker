@@ -16,6 +16,7 @@
                         class="oe_highlight" />
                     <br></br>
                     <button name="report_clear" string="Cancel" class="btn-secondary" type="object" />
+                    <!-- <button name="generate_excel_report" string="Download Excel" type="object" class="btn-primary" /> -->
 
 
                 <field name="preview"/>

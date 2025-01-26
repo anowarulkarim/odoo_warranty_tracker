@@ -1,4 +1,7 @@
 from odoo import models, fields, api, _
+import base64
+import io
+import xlsxwriter
 
 class WarrantyReportWizard(models.TransientModel):
     _name = 'warranty.report.wizard'
@@ -6,6 +9,32 @@ class WarrantyReportWizard(models.TransientModel):
 
     product_id = fields.Many2one('warranty.product', string='Product')
     preview = fields.Html(string='Preview', readonly=True)
+    export_file = fields.Binary(string='Export File', readonly=True)
+    file_name = fields.Char(string='File Name', size=64)
+
+
+    def report_exl(self):
+        product_info=self.action_generate_report_sql()
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+
+        # Define the headers
+        headers = ['Claim ID', 'Claim Date', 'Status', 'Description']
+        for col_num, header in enumerate(headers):
+            worksheet.write(0, col_num, header)
+
+        # Write the data
+        for row_num, claim in enumerate(product_info, start=1):
+            worksheet.write(row_num, 0, claim['id'])
+            worksheet.write(row_num, 1, claim['claim_date'])
+            worksheet.write(row_num, 2, claim['status'])
+            worksheet.write(row_num, 3, claim['description'])
+
+        workbook.close()
+        output.seek(0)
+        self.export_file = base64.b64encode(output.read())
+        self.file_name = f"{self.product_id.name}_warranty_report.xlsx"
 
 
     def product_report(self):
