@@ -21,7 +21,7 @@ class WarrantyReportWizard(models.TransientModel):
             <th style="padding: 12px 15px; text-align: left;">Description</th>
         </tr>
         """
-        table += f"""
+        table +=  f"""
         <tr style="background-color: #f9f9f9;">
             <th style="padding: 12px 15px; text-align: left;">Product</th>
             <td style="padding: 12px 15px; text-align: left;">{self.product_id.name}</td>
