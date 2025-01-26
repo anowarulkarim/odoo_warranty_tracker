@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_warranty_product_calendar" model="ir.ui.view">
+        <field name="name">view.warranty.product.calendar</field>
+        <field name="model">warranty.product</field>
+        <field name="arch" type="xml">
+            <calendar string="Warranty" date_start="warranty_start_date" date_stop="warranty_end_date"
+                      color="paid_option">
+                <field name="name"/>
+            </calendar>
+        </field>
+    </record>
+
+
+<!--    <record id="view_warranty_product_form" model="ir.ui.view">-->
+<!--        <field name="name">warranty.product.form</field>-->
+<!--        <field name="model">warranty.product</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form string="Warranty Product">-->
+<!--                <sheet>-->
+<!--                    <group>-->
+<!--                        <field name="name" />-->
+<!--                        <field name="serial_number" />-->
+<!--                        <field name="purchase_date" />-->
+<!--                        <field name="warranty_start_date" readonly="1" />-->
+<!--                        <field name="warranty_end_date" />-->
+<!--                        <field name="selling_price" />-->
+<!--                        <field name="discount_price" readonly="1" />-->
+<!--                        <field name="offer" />-->
+<!--                        <field name="paid_option" />-->
+<!--                        <field name="is_expired" readonly="1" />-->
+<!--                        <field name="days_to_expiry" readonly="1" />-->
+<!--                        <field name="warranty_duration" readonly="1" />-->
+<!--                        <field name="claim_descriptions" readonly="1" widget="text" />-->
+<!--                        <field name="product_currency_id" />-->
+<!--                    </group>-->
+<!--                    <group>-->
+<!--                        <field name="warranty_claim_ids">-->
+<!--                            <tree>-->
+<!--                                <field name="name" />-->
+<!--                                <field name="description" />-->
+<!--                            </tree>-->
+<!--                        </field>-->
+<!--                    </group>-->
+<!--                </sheet>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+
+
+    <record id="warranty_view_tree" model="ir.ui.view">
+        <field name="name">warranty.view.tree</field>
+        <field name="model">warranty.product</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" string="Name" width="33%"/>
+                <field name="warranty_claim_ids" string="Issues" options="{'color_field': 'color'}"
+                       widget="many2many_tags" width="33%"/>
+                <field name="days_to_expiry" string="warranty Remaining" optional="hide" width="33%"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_warranty_product_form" model="ir.ui.view">
+        <field name="name">warranty.product.form</field>
+        <field name="model">warranty.product</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="serial_number"/>
+                            <field name="purchase_date"/>
+                            <field name="warranty_start_date"/>
+                            <field name="warranty_end_date"/>
+                            <field name="selling_price"/>
+                        </group>
+                        <group>
+                            <field name="discount_price"/>
+                            <field name="offer"/>
+                            <field name="paid_option"/>
+                            <field name="is_expired"/>
+                            <field name="days_to_expiry"/>
+                            <field name="warranty_duration"/>
+                            <field name="product_currency_id"/>
+                        </group>
+                    </group>
+
+                    <!-- Notebook section -->
+                    <notebook>
+                        <page string="Warranty Claims">
+                            <field name="warranty_claim_ids">
+                                <tree editable="bottom">
+                                    <field name="description"/>
+                                    <field name="claim_date"/>
+                                    <field name="status"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Claim Descriptions">
+                            <field name="claim_descriptions" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_warranty_product_graph" model="ir.ui.view">
+        <field name="name">warranty.product.graph</field>
+        <field name="model">warranty.product</field>
+        <field name="arch" type="xml">
+            <graph string="Product Warranty Analysis" type="bar" disable_linking="1">
+                <!-- Group by purchase date month -->
+                <field name="purchase_date" interval="year" string="Purchase Month"/>
+                <field name="name"/>
+                <!-- Measure: Total Selling Price -->
+                <field name="selling_price" type="measure" string="Total Selling Price"/>
+                <!-- Measure: Total Discount Price -->
+
+            </graph>
+        </field>
+    </record>
+    <record id="view_warranty_product_pivot" model="ir.ui.view">
+        <field name="name">warranty.product.pivot</field>
+        <field name="model">warranty.product</field>
+        <field name="arch" type="xml">
+            <pivot string="Warranty Product Report">
+                <!-- Row fields for grouping data (e.g., by Product Name) -->
+                <field name="name" type="row"/>
+
+                <!-- Column fields for aggregation (e.g., by Payment Method or Offer status) -->
+                <field name="paid_option" type="col"/>
+                <field name="offer" type="row"/>
+
+                <!-- Aggregated measures -->
+                <!--            <field name="selling_price" type="measure" string="Selling Price" />-->
+                <!--            <field name="discount_price" type="measure" string="Discount Price" />-->
+                <!--            <field name="warranty_duration" type="measure" string="Warranty Duration (Days)" />-->
+                <!--            <field name="days_to_expiry" type="measure" string="Days to Expiry" />-->
+            </pivot>
+        </field>
+    </record>
+
+
+    <record id="warranty_action" model="ir.actions.act_window">
+        <field name="name">WarrantyProduct</field>
+        <field name="res_model">warranty.product</field>
+        <field name="view_mode">tree,form,calendar,graph,pivot</field>
+        <field name="context">{'default_discount_price': '10'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a School
+            </p>
+            <p>
+                Create a School Info
+            </p>
+        </field>
+    </record>
+
+
+    <record id="ir_cron_check_warranty_end_date" model="ir.cron">
+        <field name="name">Warranty Alert</field>
+        <field name="model_id" ref="warranty_tracker.model_warranty_product"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_warranty_alert()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

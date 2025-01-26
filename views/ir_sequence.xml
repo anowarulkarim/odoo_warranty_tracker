@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="parent_id_order" model="ir.sequence">
+        <field name="name">Parent ID</field>
+        <field name="code">serial.number.sequence</field>
+        <field name="prefix">SN</field>
+        <field name="padding">5</field>
+    </record>
+</odoo>
