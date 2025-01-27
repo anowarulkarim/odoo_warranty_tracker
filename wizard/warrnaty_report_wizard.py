@@ -18,7 +18,8 @@ class WarrantyReportWizard(models.TransientModel):
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet()
-
+        
+        
         # Define formats
         bold_format = workbook.add_format({'bold': True})
         title_format = workbook.add_format({
